@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Z-Image-Turbo-Lora-Stack-V4"
-version = "1.0.0"
+version = "1.1.0"
 description = "ZImage Turbo LoRA Stack V4 custom node for ComfyUI."
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -31,3 +31,4 @@ requires-comfyui = ">=0.3.0"
 
 [tool.comfy.nodes]
 ZImageTurboLoraStackV4 = "zimage_turbo_lora_stack_v4:ZImageTurboLoraStackV4"
+
