@@ -3,11 +3,11 @@ import re
 from dataclasses import dataclass
 from typing import Any, Dict, Optional, Tuple
 
-import torch
+import torch  # type: ignore
 
-import comfy.sd
-import comfy.utils
-import folder_paths
+import comfy.sd  # type: ignore
+import comfy.utils  # type: ignore
+import folder_paths  # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class MergeGroup:
 def _split_lora_key(key: str) -> Optional[Tuple[str, str, str]]:
     for suffix, kind in _SUFFIX_KIND.items():
         if key.endswith(suffix):
-            return key[: -len(suffix)], suffix, kind
+            return key[:-len(suffix)], suffix, kind  # type: ignore
     return None
 
 
@@ -182,7 +182,7 @@ def _translate_lora_state_dict(lora_state: Dict[str, Any], transformer: Any) -> 
                 for kind in ("A", "B"):
                     original_key = group.original_keys.get((component, kind))
                     if original_key is not None:
-                        translated[original_key] = lora_state[original_key]
+                        translated[original_key] = lora_state[original_key]  # type: ignore
             continue
 
         merged_a, merged_b, a_suffix, b_suffix = merged
@@ -197,7 +197,7 @@ def _translate_lora_state_dict(lora_state: Dict[str, Any], transformer: Any) -> 
                 for kind in ("A", "B"):
                     original_key = group.original_keys.get((component, kind))
                     if original_key is not None:
-                        translated[original_key] = lora_state[original_key]
+                        translated[original_key] = lora_state[original_key]  # type: ignore
             continue
 
         merged_a, merged_b, a_suffix, b_suffix = merged
@@ -220,7 +220,7 @@ class ZImageTurboLoraStackV4:
             "toggle_all": ("BOOLEAN", {"default": True}),
         }
 
-        optional = {}
+        optional: Dict[str, Any] = {}
         for i in range(1, 11):
             optional[f"enabled_{i}"] = ("BOOLEAN", {"default": True})
             optional[f"lora_name_{i}"] = (lora_list,)
@@ -278,7 +278,7 @@ class ZImageTurboLoraStackV4:
             if abs(strength) < 1e-6:
                 continue
 
-            patched_model = self._apply_single(patched_model, clip, lora_name, strength)
+            patched_model = self._apply_single(patched_model, clip, lora_name, strength)  # type: ignore
 
         return patched_model, clip
 
