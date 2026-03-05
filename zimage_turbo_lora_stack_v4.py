@@ -233,24 +233,8 @@ class ZImageTurboLoraStackV4:
     FUNCTION = "apply_lora_stack"
     CATEGORY = "loaders/lora"
 
-    def _resolve_lora_name(self, lora_name: str) -> str:
-        candidates = []
-        for candidate in (lora_name, lora_name.replace("\\", "/"), lora_name.replace("/", "\\")):
-            if candidate and candidate not in candidates:
-                candidates.append(candidate)
-
-        for candidate in candidates:
-            try:
-                folder_paths.get_full_path_or_raise("loras", candidate)
-                return candidate
-            except Exception:
-                continue
-
-        return lora_name
-
     def _load_lora_state(self, lora_name: str) -> Dict[str, Any]:
-        resolved_name = self._resolve_lora_name(lora_name)
-        lora_path = folder_paths.get_full_path_or_raise("loras", resolved_name)
+        lora_path = folder_paths.get_full_path_or_raise("loras", lora_name)
         return comfy.utils.load_torch_file(lora_path, safe_load=True)
 
     def _apply_standard(self, model: Any, clip: Any, lora_state: Dict[str, Any], strength: float) -> Any:

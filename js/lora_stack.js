@@ -25,58 +25,6 @@ function toggleWidget(node, widget, show) {
     }
 }
 
-function getWidgetValues(widget) {
-    if (!widget || !widget.options) return [];
-    const values = widget.options.values;
-    if (Array.isArray(values)) return values;
-    if (typeof values === "function") {
-        try {
-            const resolved = values();
-            return Array.isArray(resolved) ? resolved : [];
-        } catch {
-            return [];
-        }
-    }
-    return [];
-}
-
-function normalizeLoraWidgetValue(widget) {
-    if (!widget || typeof widget.value !== "string") return;
-
-    const values = getWidgetValues(widget);
-    if (!values.length) return;
-
-    const current = widget.value;
-    if (values.includes(current)) return;
-
-    const slashNormalized = current.replace(/\\/g, "/");
-    if (values.includes(slashNormalized)) {
-        widget.value = slashNormalized;
-        return;
-    }
-
-    const backslashNormalized = current.replace(/\//g, "\\");
-    if (values.includes(backslashNormalized)) {
-        widget.value = backslashNormalized;
-        return;
-    }
-
-    const filename = current.split(/[\\/]/).pop();
-    if (filename) {
-        const suffixSlash = `/${filename}`;
-        const suffixBackslash = `\\${filename}`;
-        const matches = values.filter(
-            (v) => typeof v === "string" && (v === filename || v.endsWith(suffixSlash) || v.endsWith(suffixBackslash))
-        );
-        if (matches.length === 1) {
-            widget.value = matches[0];
-            return;
-        }
-    }
-
-    widget.value = values[0];
-}
-
 app.registerExtension({
     name: "ZImage.TurboLoraStackV4",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
@@ -99,7 +47,6 @@ app.registerExtension({
                         const w1 = this.widgets.find((w) => w.name === `enabled_${i}`);
                         const w2 = this.widgets.find((w) => w.name === `lora_name_${i}`);
                         const w3 = this.widgets.find((w) => w.name === `strength_${i}`);
-                        normalizeLoraWidgetValue(w2);
                         toggleWidget(this, w1, visible);
                         toggleWidget(this, w2, visible);
                         toggleWidget(this, w3, visible);
