@@ -211,7 +211,7 @@ def _translate_lora_state_dict(lora_state: Dict[str, Any], transformer: Any) -> 
 class ZImageTurboLoraStackV4:
     @classmethod
     def INPUT_TYPES(cls):
-        lora_list = folder_paths.get_filename_list("loras")
+        lora_list = ["None"] + folder_paths.get_filename_list("loras")
 
         required = {
             "model": ("MODEL",),
@@ -232,6 +232,10 @@ class ZImageTurboLoraStackV4:
     RETURN_NAMES = ("MODEL", "CLIP")
     FUNCTION = "apply_lora_stack"
     CATEGORY = "loaders/lora"
+
+    @classmethod
+    def VALIDATE_INPUTS(cls, **kwargs):
+        return True
 
     def _load_lora_state(self, lora_name: str) -> Dict[str, Any]:
         lora_path = folder_paths.get_full_path_or_raise("loras", lora_name)
@@ -273,7 +277,7 @@ class ZImageTurboLoraStackV4:
 
             if not enabled:
                 continue
-            if not lora_name:
+            if not lora_name or lora_name == "None":
                 continue
             if abs(strength) < 1e-6:
                 continue
